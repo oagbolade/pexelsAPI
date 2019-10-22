@@ -1,15 +1,34 @@
 <template>
   <div class="container">
-    <input type="text" placeholder="Search Image..." />
-    <div class="search"></div>
+    <form @submit="submitForm">
+      <input type="text" v-model="imageSearch" ref="imageSearch" placeholder="Search Image..." />
+      <div class="search"></div>
+    </form>
   </div>
 </template>
 
 <script>
 export default {
   name: "SearchBar",
+  data() {
+    return {
+      imageSearch: ""
+    };
+  },
   props: {
     msg: String
+  },
+  methods: {
+    submitForm(e) {
+      e.preventDefault();
+      this.imageSearch = this.$refs.imageSearch.value;
+
+      if (this.imageSearch.trim() === "") {
+        return false;
+      }
+      let goToPage = `/Results/${this.imageSearch}`;
+      this.$router.push(goToPage);
+    }
   }
 };
 </script>

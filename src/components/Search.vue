@@ -1,11 +1,11 @@
 <template>
-  <div id="app">
+  <div id="search-component">
     <SearchBar msg="Welcome to Your Vue.js App" />
   </div>
 </template>
 
 <script>
-import SearchBar from "./components/SearchBar.vue";
+import SearchBar from "./SearchBar";
 
 export default {
   name: "app",
@@ -15,17 +15,12 @@ export default {
 };
 </script>
 
-<style>
-body {
-  margin: 0;
-  padding: 0;
-}
-
-#app {
+<style scoped>
+#search-component {
   margin: 0;
   padding: 0;
   background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
-    url("./assets/pexelsAPIBackground.jpg");
+    url("../assets/pexelsAPIBackground.jpg");
   background-repeat: no-repeat;
   background-color: #57c0fa; /* Used if the image is unavailable */
   background-position: center; /* Center the image */
