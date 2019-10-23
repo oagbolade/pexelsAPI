@@ -2,8 +2,12 @@ import Vue from 'vue'
 import App from './App.vue'
 import VueRouter from "vue-router";
 import routes from "./router";
+import axios from "axios";
+import BootstrapVue from "bootstrap-vue";
 
+Vue.use(BootstrapVue);
 
+Vue.use(axios);
 Vue.use(VueRouter);
 
 Vue.config.productionTip = false
