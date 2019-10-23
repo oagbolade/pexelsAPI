@@ -38,7 +38,7 @@ export default {
     return {
       url: "https://api.pexels.com/v1/search?",
       proxy: "https://cors-anywhere.herokuapp.com/",
-      key: process.env.VUE_APP_API_KEY,
+      key: process.env.VUE_APP_API_KEY || process.env.API_KEY,
       loading: false,
       imageSearch: this.$route.params.imageSearch,
       currentPage: 1,

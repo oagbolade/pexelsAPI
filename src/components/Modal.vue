@@ -71,7 +71,7 @@ export default {
     return {
       url: "https://api.pexels.com/v1/photos/",
       proxy: "https://cors-anywhere.herokuapp.com/",
-      key: process.env.VUE_APP_API_KEY,
+      key: process.env.VUE_APP_API_KEY || process.env.API_KEY,
       showModal: false,
       photoMetaData: {}
     };
