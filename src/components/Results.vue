@@ -7,13 +7,13 @@
 
     <div class="resultContainer">
       <div v-bind:key="imageResult.id" v-for="imageResult in imageResults">
-        <div @click="toggleModal(imageResult.id)">
+        <div class="imageCard" @click="toggleModal(imageResult.id)">
           <img :src="imageResult.src.landscape" alt="..." />
         </div>
       </div>
     </div>
 
-    <div>
+    <div class="buttomButtons">
       <button class="btn btn-success nextButton" @click="nextPage">Next</button>
       <button
         v-if="this.currentPage > 1"
@@ -21,7 +21,12 @@
         @click="previousPage"
       >Previous</button>
     </div>
-    <Modal v-if="this.showModal" v-bind:currentPhotoId="currentPhotoId" v-bind:showModal="showModal" v-on:toggleModal="toggleModal"/>
+    <Modal
+      v-if="this.showModal"
+      v-bind:currentPhotoId="currentPhotoId"
+      v-bind:showModal="showModal"
+      v-on:toggleModal="toggleModal"
+    />
   </div>
 </template>
 
@@ -70,7 +75,7 @@ export default {
           }
 
           this.imageResults = res.data.photos;
-         // console.log(res);
+          // console.log(res);
         })
         .catch(err => {
           if (err) {
@@ -94,8 +99,8 @@ export default {
       this.$router.push("/");
     },
 
-    toggleModal(currentPhotoId){
-      this.showModal = !this.showModal
+    toggleModal(currentPhotoId) {
+      this.showModal = !this.showModal;
       this.currentPhotoId = currentPhotoId;
       console.log(currentPhotoId);
     }
@@ -120,6 +125,10 @@ img {
   width: 100%;
 }
 
+.imageCard:hover {
+  width: 105%;
+}
+
 .nextButton {
   position: absolute;
   right: 2%;
@@ -129,6 +138,11 @@ img {
   position: absolute;
   margin-left: 2%;
 }
+
+.buttomButtons {
+  margin-bottom: 60px;
+}
+
 .resultHeader {
   display: grid;
   grid-template-columns: 10% 80%;
@@ -152,6 +166,21 @@ img {
     justify-items: center;
     display: grid;
     grid-template-columns: repeat(1, 3fr);
+  }
+
+  .btn-lg {
+    width: 90px;
+  }
+
+  .pageHeader {
+    font-size: 25px;
+    margin-top: 10px;
+  }
+
+  .resultHeader {
+    display: grid;
+    grid-template-columns: repeat(1,2fr);
+    margin: 10px;
   }
 }
 </style>

@@ -24,7 +24,7 @@
                         alt="..."
                       />
                     </div>
-                    <div>
+                    <p>
                       Want to see more works by
                       <b>{{this.photoMetaData.photographer}}</b>
                       visit
@@ -32,12 +32,12 @@
                         :href="this.photoMetaData.photographer_url"
                         target="blank"
                       >{{this.photoMetaData.photographer_url}}</a>
-                    </div>
-                    <div>
+                    </p>
+                    <p>
                       <a :href="this.photoMetaData.url" target="blank">
                         <button class="btn btn-lg btn-primary">Download Image</button>
                       </a>
-                    </div>
+                    </p>
                   </div>
                 </slot>
               </div>
@@ -108,6 +108,12 @@ export default {
 </script>
 
 <style scoped>
+/* Image CSS */
+img {
+  width: 20%;
+  height: 20%;
+}
+
 .hideContent {
   display: none;
 }
@@ -197,6 +203,13 @@ export default {
 .modal-leave-active .modal-container {
   -webkit-transform: scale(1.1);
   transform: scale(1.1);
+}
+
+@media screen and (max-width: 750px) {
+  img {
+    width: 50%;
+    height: 50%;
+  }
 }
 
 @media screen and (max-width: 650px) {
