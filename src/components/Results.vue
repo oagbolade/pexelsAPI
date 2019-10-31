@@ -4,11 +4,14 @@
       <button class="backButton btn btn-lg btn-outline-success" @click="goToHome">Back</button>
       <h3 class="pageHeader">Search Results</h3>
     </div>
+    <Spinner v-if="this.loading" />
 
-    <div class="resultContainer">
+    <div class="box">
       <div v-bind:key="imageResult.id" v-for="imageResult in imageResults">
-        <div class="imageCard" @click="toggleModal(imageResult.id)">
-          <img :src="imageResult.src.landscape" alt="..." />
+        <div class="card" @click="toggleModal(imageResult.id), toggleSpinner()">
+          <div class="imgBx">
+            <img :src="imageResult.src.landscape" alt="..." />
+          </div>
         </div>
       </div>
     </div>
@@ -26,6 +29,7 @@
       v-bind:currentPhotoId="currentPhotoId"
       v-bind:showModal="showModal"
       v-on:toggleModal="toggleModal"
+      @toggleSpinner="toggleSpinner"
     />
   </div>
 </template>
@@ -33,11 +37,14 @@
 <script>
 import axios from "axios";
 import Modal from "./Modal";
+import Spinner from "./Spinner";
+import isEmptyArray from "../isEmptyArray.js";
 
 export default {
   name: "Results",
   components: {
-    Modal
+    Modal,
+    Spinner
   },
   data() {
     return {
@@ -56,6 +63,7 @@ export default {
   methods: {
     // API Fetch
     searchImage(currentPage) {
+      this.loading = true;
       axios
         .get(`${this.proxy}${this.url}`, {
           headers: {
@@ -75,7 +83,11 @@ export default {
           }
 
           this.imageResults = res.data.photos;
-          // console.log(res);
+
+          if (isEmptyArray(this.imageResults)) {
+            return false;
+          }
+          this.loading = false;
         })
         .catch(err => {
           if (err) {
@@ -102,7 +114,10 @@ export default {
     toggleModal(currentPhotoId) {
       this.showModal = !this.showModal;
       this.currentPhotoId = currentPhotoId;
-      console.log(currentPhotoId);
+    },
+
+    toggleSpinner() {
+      this.loading = !this.loading;
     }
   },
   mounted() {
@@ -112,22 +127,67 @@ export default {
 </script>
 
 <style scoped>
-.resultContainer {
-  justify-items: center;
+/* Card CSS Code Start */
+
+.box {
   display: grid;
   grid-template-columns: repeat(4, 2fr);
+  grid-gap: 40px;
+  margin: 0 auto;
 }
-
-img {
-  margin: 10px;
-  border-radius: 10px;
-  padding: 20px;
+.card {
+  position: relative;
+  width: 400px;
+  height: 300px;
+  background: #fff;
+  margin: 0 auto;
+  border-radius: 4px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+.card:before,
+.card:after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
+  height: 100%;
+  border-radius: 4px;
+  background: #fff;
+  transition: 0.5s;
+  z-index: -1;
+}
+.card:hover:before {
+  transform: rotate(20deg);
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.2);
+}
+.card:hover:after {
+  transform: rotate(10deg);
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.2);
+}
+.card .imgBx {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  bottom: 10px;
+  right: 10px;
+  background: #222;
+  transition: 0.5s;
+  z-index: 1;
 }
 
-.imageCard:hover {
-  width: 105%;
+.card:hover .imgBx {
+  bottom: 20px;
 }
+
+.card .imgBx img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+/* Card CSS Code End */
 
 .nextButton {
   position: absolute;
@@ -140,6 +200,7 @@ img {
 }
 
 .buttomButtons {
+  margin-top: 20px;
   margin-bottom: 60px;
 }
 
@@ -154,7 +215,7 @@ img {
 }
 
 @media screen and (max-width: 1200px) {
-  .resultContainer {
+  .box {
     justify-items: center;
     display: grid;
     grid-template-columns: repeat(2, 3fr);
@@ -162,7 +223,7 @@ img {
 }
 
 @media screen and (max-width: 710px) {
-  .resultContainer {
+  .box {
     justify-items: center;
     display: grid;
     grid-template-columns: repeat(1, 3fr);
@@ -179,7 +240,7 @@ img {
 
   .resultHeader {
     display: grid;
-    grid-template-columns: repeat(1,2fr);
+    grid-template-columns: repeat(1, 2fr);
     margin: 10px;
   }
 }

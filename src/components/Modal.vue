@@ -2,65 +2,61 @@
   <div>
     <div class="col-md-6 offset-md-5 col-sm-4"></div>
     <transition name="modal">
-      <div v-bind:class="{}">
+      <div>
         <div class="modal-mask" @click="$emit('toggleModal')">
-          <div class="modal-wrapper">
-            <div class="modal-container">
-              <div class="modal-header">
-                <slot name="header">
-                  <h3>
-                    <b>Photo by:</b>
-                    {{this.photoMetaData.photographer}}
-                  </h3>
-                </slot>
-              </div>
-              <div class="modal-body">
-                <slot name="body">
-                  <div class="photo">
-                    <div>
-                      <h3>Image Preview</h3>
-                      <img
-                        :src="(this.photoMetaData.src.medium !== '')?this.photoMetaData.src.medium:false"
-                        alt="..."
-                      />
-                    </div>
-                    <p>
-                      Want to see more works by
-                      <b>{{this.photoMetaData.photographer}}</b>
-                      visit
-                      <a
-                        :href="this.photoMetaData.photographer_url"
-                        target="blank"
-                      >{{this.photoMetaData.photographer_url}}</a>
-                    </p>
-                    <p>
-                      <a :href="this.photoMetaData.url" target="blank">
-                        <button class="btn btn-lg btn-primary">Download Image</button>
-                      </a>
-                    </p>
+          <div class="modal-container">
+            <div class="modal-header">
+              <slot name="header">
+                <h3>
+                  <b>Photo by:</b>
+                  {{this.photoMetaData.photographer}}
+                </h3>
+              </slot>
+            </div>
+            <div class="modal-body">
+              <slot name="body">
+                <div class="photo">
+                  <div>
+                    <h3>Image Preview</h3>
+                    <img
+                      :src="(this.photoMetaData.src.medium !== '')?this.photoMetaData.src.medium:false"
+                      alt="..."
+                    />
                   </div>
-                </slot>
-              </div>
+                  <p>
+                    Want to see more works by
+                    <b>{{this.photoMetaData.photographer}}</b>
+                    visit
+                    <a
+                      :href="this.photoMetaData.photographer_url"
+                      target="blank"
+                    >{{this.photoMetaData.photographer_url}}</a>
+                  </p>
+                  <p>
+                    <a :href="this.photoMetaData.url" target="blank">
+                      <button class="btn btn-lg btn-primary">Download Image</button>
+                    </a>
+                  </p>
+                </div>
+              </slot>
+            </div>
 
-              <div class="modal-footer">
-                <slot name="footer">
-                  <!--default footer here-->
-                  <button class="btn btn-danger" @click="$emit('toggleModal')">Close</button>
-                </slot>
-              </div>
+            <div class="modal-footer">
+              <slot name="footer">
+                <!--default footer here-->
+                <button class="btn btn-danger" @click="$emit('toggleModal')">Close</button>
+              </slot>
             </div>
           </div>
         </div>
       </div>
     </transition>
-
-    <!-- use the modal component, pass in the prop -->
-    <modal v-if="showModal" @close="showModal = false"></modal>
   </div>
 </template>
 
 <script>
 import axios from "axios";
+import isEmptyObject from "../isEmptyObject.js";
 
 export default {
   name: "Modal",
@@ -72,7 +68,6 @@ export default {
       url: "https://api.pexels.com/v1/photos/",
       proxy: "https://cors-anywhere.herokuapp.com/",
       key: process.env.VUE_APP_API_KEY || process.env.API_KEY,
-      showModal: false,
       photoMetaData: {}
     };
   },
@@ -92,6 +87,13 @@ export default {
           //   }
 
           this.photoMetaData = res.data;
+
+          if (isEmptyObject(this.photoMetaData)) {
+            console.log("Empty");
+            return false;
+          }
+          this.$emit("toggleSpinner");
+
           console.log(this.photoMetaData);
         })
         .catch(err => {
@@ -139,27 +141,24 @@ img {
 }
 /*Loading Spinner End*/
 
+/* Modal CSS Code Start */
 .modal-mask {
   position: fixed;
+  right: 0;
+  bottom: 0;
   z-index: 9998;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
-  display: table;
   transition: opacity 0.3s ease;
-}
-
-.modal-wrapper {
-  display: table-cell;
-  vertical-align: middle;
 }
 
 .modal-container {
   width: 70%;
   height: auto;
-  margin: 0px auto;
+  margin: 5% auto;
   padding: 20px 30px;
   background-color: #fff;
   border-radius: 2px;
@@ -181,6 +180,7 @@ img {
 .modal-default-button {
   float: right;
 }
+/* Modal CSS Code Start */
 
 /*
      * The following styles are auto-applied to elements with
